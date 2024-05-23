@@ -213,7 +213,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun CustomView(text: String, modifier: Modifier = Modifier) {
 
-//        var contactsArray = loadContacts()
+        var contactsArray = loadContacts()
 
         Column(
             Modifier.padding(16.dp),
@@ -228,14 +228,14 @@ class MainActivity : ComponentActivity() {
             )
 
 //   //use load function for this list to pass to contactList
-            val contactsArray = listOf(
-                Contact("1","John Doe", "123456789","johndoe@mail.com"),
-                Contact("2","Bill Ding", "987654321","billding@phone.com"),
-                Contact("3","Ella Vader", "5859685732","ellavader@desk.com"),
-                Contact("4","Barry Cade", "9094857463","barrycade@outsid.com"),
-                Contact("5","Jason Roth", "4049931234","jasonroth@test.com"),
-                Contact("6","Barb Dwyer", "8904536221","barbdwyer@dkkd.com")
-            )
+//            val contactsArray = listOf(
+//                Contact("1","John Doe", "123456789","johndoe@mail.com"),
+//                Contact("2","Bill Ding", "987654321","billding@phone.com"),
+//                Contact("3","Ella Vader", "5859685732","ellavader@desk.com"),
+//                Contact("4","Barry Cade", "9094857463","barrycade@outsid.com"),
+//                Contact("5","Jason Roth", "4049931234","jasonroth@test.com"),
+//                Contact("6","Barb Dwyer", "8904536221","barbdwyer@dkkd.com")
+//            )
 
 
             ContactList(contacts = contactsArray)

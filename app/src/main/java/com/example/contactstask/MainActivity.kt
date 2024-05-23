@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
@@ -154,10 +155,14 @@ class MainActivity : ComponentActivity() {
         )
         cursor?.use {
             while (it.moveToNext()) {
+                //Get the id of Contact
                 val id = it.getString(it.getColumnIndex(ContactsContract.Contacts._ID))
+
+                //Get the name of Contact
                 val name = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-                val hasPhoneNumber =
-                    it.getInt(it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0
+
+                //Get the phone number of Contact
+                val hasPhoneNumber = it.getInt(it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0
                 if (hasPhoneNumber) {
                     val phoneCursor = contentResolver.query(
                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -166,17 +171,36 @@ class MainActivity : ComponentActivity() {
                         arrayOf(id),
                         null
                     )
+
+                    //Adding email retrieval here
+                    var email: String? = null
+
+                    //Create cursor for email
+                    val emailCursor = contentResolver.query(
+                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                        arrayOf(id), null
+                    )
+                    emailCursor?.use { ec ->
+                        if (ec.moveToNext()) {
+                            email = ec.getString(ec.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))
+                        }
+                    }
+
+
                     phoneCursor?.use { pc ->
                         while (pc.moveToNext()) {
-                            val phoneNumber =
-                                pc.getString(pc.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                            val contact = Contact(name, phoneNumber)
+                            val phoneNumber = pc.getString(pc.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                            val contact = Contact(id, name, phoneNumber, email)
                             contacts.add(contact)
                         }
                     }
                     phoneCursor?.close()
+
+
                 } else {
-                    val contact = Contact(name, null)
+                    val contact = Contact(name, null, null,null)
                     contacts.add(contact)
                 }
             }
@@ -189,28 +213,29 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun CustomView(text: String, modifier: Modifier = Modifier) {
 
-        val contactsArray = loadContacts()
+//        var contactsArray = loadContacts()
 
         Column(
             Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally //align Contacts title
         ) {
             Text(
                 text = text,
                 color = Color.Blue,
                 fontSize = 34.sp,
-                fontStyle = FontStyle.Italic
-
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center
             )
 
 //   //use load function for this list to pass to contactList
-//            val contactsArray = listOf(
-//                Contact("John Doe", "123456789"),
-//                Contact("Bill Ding", "987654321"),
-//                Contact("Ella Vader", "5859685732"),
-//                Contact("Barry Cade", "9094857463"),
-//                Contact("Jason Roth", "4049931234"),
-//                Contact("Barb Dwyer", "8904536221"),
-//            )
+            val contactsArray = listOf(
+                Contact("1","John Doe", "123456789","johndoe@mail.com"),
+                Contact("2","Bill Ding", "987654321","billding@phone.com"),
+                Contact("3","Ella Vader", "5859685732","ellavader@desk.com"),
+                Contact("4","Barry Cade", "9094857463","barrycade@outsid.com"),
+                Contact("5","Jason Roth", "4049931234","jasonroth@test.com"),
+                Contact("6","Barb Dwyer", "8904536221","barbdwyer@dkkd.com")
+            )
 
 
             ContactList(contacts = contactsArray)
@@ -244,6 +269,11 @@ class MainActivity : ComponentActivity() {
                             .padding(vertical = 8.dp),
 
                         ) {
+                        Text(
+                            text = "Id: ${contact.id}",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
 
                         Text(
                             text = "Name: ${contact.name}",
@@ -256,6 +286,13 @@ class MainActivity : ComponentActivity() {
                             textAlign = TextAlign.Center //center align the text
 
                         )
+                        Text(
+                            text = "Email: ${contact.email}", //text to display
+                            modifier = Modifier.fillMaxWidth(), //text element will hav full width
+                            textAlign = TextAlign.Center //center align the text
+
+                        )
+
                     }
 
                 }

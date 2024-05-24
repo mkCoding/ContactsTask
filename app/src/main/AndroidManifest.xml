@@ -5,6 +5,7 @@
 <!--  Add permissions for reading/writing contacts  -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +28,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".MainService" />
+
+
+        <receiver
+            android:name=".MainBroadCastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.contactstask.MainBroadCastReciever" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

@@ -78,20 +78,20 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        //Initialize Broadcast
         val filter = IntentFilter()
         filter.addAction("com.example.MainBroadCastReceiver")
         registerReceiver(MainBroadCastReceiver(), filter, RECEIVER_EXPORTED)
 
+        //Sending the broadcast
         val intent = Intent("com.example.MainBroadCastReceiver")
         sendBroadcast(intent)
-
-
 
 
     }
 
 
+    //Checks if the service is currently running or not
+    //Service runs in background without any interaction from user
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
@@ -102,6 +102,7 @@ class MainActivity : ComponentActivity() {
         return false
     }
     //-----------Functionality to retrieve contacts-------------
+    //Modified function to return list of contacts
     private fun loadContacts(): List<Contact> {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -119,6 +120,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    //Request Contacts permissions from user
     private fun requestContactsPermission() {
         // Check if the permission has already been granted
         if (ContextCompat.checkSelfPermission(
@@ -164,6 +166,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    //Did the user grant permissions or not
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -183,6 +186,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    //Populate getContactsList
     @SuppressLint("Range")
     fun getContactList(context: Context): List<Contact> {
         val contacts = mutableListOf<Contact>()
@@ -248,6 +252,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    //------------------All Code related to the UI------------------------------
     @Composable
     fun ContactsView(text: String, modifier: Modifier = Modifier) {
 
@@ -277,14 +282,13 @@ class MainActivity : ComponentActivity() {
 //                Contact("6","Barb Dwyer", "8904536221","barbdwyer@dkkd.com")
 //            )
 
-
             ContactList(contacts = contactsArray)
 
         }
 
     }
 
-    //Creates composable for contacts based on list passed in
+    //Creates composable for contacts based on list passed in and retrieved from from phone contacts
     @Composable
     fun ContactList(contacts: List<Contact>) {
         LazyColumn(
@@ -325,7 +329,6 @@ class MainActivity : ComponentActivity() {
                             text = "Phone Number: ${contact.phoneNumber}", //text to display
                             modifier = Modifier.fillMaxWidth(), //text element will hav full width
                             textAlign = TextAlign.Center //center align the text
-
                         )
                         Text(
                             text = "Email: ${contact.email}", //text to display
@@ -341,6 +344,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //----------------------Media Controls-----------------
     @Composable
     fun PlayButton(){
         var isPlaying by remember { mutableStateOf(false) }
@@ -360,7 +364,7 @@ class MainActivity : ComponentActivity() {
         ) {
 
             Text(
-                text = buttonText //change text on buton click
+                text = buttonText //change text on button click
 
             )
         }
@@ -380,6 +384,7 @@ class MainActivity : ComponentActivity() {
             }
     }
 
+    //-------------------------Set this up to show live preview----------------
     @Preview(showBackground = true)
     @Composable
     fun CustomViewPreview() {
